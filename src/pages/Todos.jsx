@@ -21,51 +21,92 @@ const Todos = () => {
   };
 
   return (
-    <div className="container">
-      <div className="logoTodos py-5 flex justify-center ">
-        <img className="size-15" src={logoTodo} alt="Todo Logo" />
-      </div>
-      <div className="flex justify-center mt-5">
-        <div className="w-10/12 flex">
-          <input
-            onChange={handleChangeInputTodo}
-            placeholder="Add todos"
-            value={valInputTodo.title}
-            type="text"
-            className="w-full rounded-l-full  border-2 border-orange-200 border-solid p-2 "
-          />
-          <button
-            disabled={valInputTodo.title.length === 0 ? true : false}
-            onClick={handleAddTodo}
-            className={`btn-add text-white py-[10.5px] rounded-r-full px-[27px] ${
-              valInputTodo.title.length === 0
-                ? "cursor-not-allowed"
-                : "cursor-pointer"
-            }`}>
-            Add
-          </button>
+    <div className="container mx-auto mt-10   rounded-lg flex justify-center">
+      <div className="  w-10/12 rounded-lg">
+        <div className="flex justify-center p-5 backdrop-blur-md bg-seashell">
+          <img src={logoTodo} alt="Logo todos" />
         </div>
-      </div>
-      <div className="flex justify-center mt-5">
-        <div className="w-10/12 flex">
-          <input
-            placeholder="Search Todos"
-            type="text"
-            className="w-full rounded-l-full  border-2 border-orange-200 border-solid p-2 "
-          />
-          <button className=" bg-purple-400 text-white py-[10.5px] rounded-r-full px-[18px]">
-            Search
-          </button>
+
+        <div className="flex justify-center mb-6 gap-3">
+          <div className="flex justify-center mt-5">
+            <div className="w-full flex">
+              <input
+                onChange={handleChangeInputTodo}
+                placeholder="Add todos"
+                value={valInputTodo.title}
+                type="text"
+                className="w-full bg-seashell rounded-l-full border-none  focus:ring-lightbrown focus:ring-2 p-2 "
+              />
+              <button
+                disabled={valInputTodo.title.length === 0 ? true : false}
+                onClick={handleAddTodo}
+                className={`bg-skyblue text-white py-[10.5px] rounded-r-full px-[27px] ${
+                  valInputTodo.title.length === 0
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer"
+                }`}>
+                Add
+              </button>
+            </div>
+          </div>
+          <div className="flex justify-center mt-5">
+            <div className="w-full flex">
+              <input
+                placeholder="Search Todos"
+                type="text"
+                className="w-full bg-seashell rounded-l-full border-none  focus:ring-lightbrown focus:ring-2 p-2 "
+              />
+              <button className=" bg-purple-400 text-white py-[10.5px] rounded-r-full px-[18px]">
+                Search
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="flex justify-center pt-3">
-        <div className="w-10/12 render-todo">
-          <div className=" flex justify-between items-center py-5 px-5 border-b-2 border-blue-300">
-            <input type="checkbox" name="" id="" />
-            <p>Cong viec 1</p>
-            <div className=" flex gap-2">
-              <button className="bg-green-200 p-1 rounded-lg">Edit</button>
-              <button className="bg-red-300 p-1 rounded-lg">Delete</button>
+        <div className="backdrop-blur-md bg-seashell rounded-lg pb-8">
+          <div className="flex justify-center  ">
+            <div className="w-full  ">
+              <div className=" flex justify-between items-center px-5 pt-5 ">
+                <div className="flex items-center gap-5  w-10/12 ">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox text-brown border-gray-300 rounded-lg focus:ring-brown"
+                  />
+                  <p className="font-light  border-b-[1px] w-full border-skyblue">
+                    Cong viec 1
+                  </p>
+                </div>
+                <div className=" flex gap-3 mt-[5px]">
+                  <button className="hover:text-red-600 text-brown">
+                    <i className="fa-regular fa-pen-to-square"></i>
+                  </button>
+                  <button className="hover:text-red-600 text-brown">
+                    <i className="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-center  ">
+            <div className="w-full ">
+              <div className=" flex justify-between items-center px-5 pt-5  ">
+                <div className="flex items-center gap-5  w-10/12">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox text-brown border-gray-300 rounded-lg focus:ring-brown"
+                  />
+                  <p className="font-light  border-b-[1px] w-full border-skyblue ">
+                    Cong viec 1
+                  </p>
+                </div>
+                <div className=" flex gap-3 justify-end mt-[5px]">
+                  <button className="hover:text-red-600 text-brown ">
+                    <i className=" fa-regular fa-pen-to-square"></i>
+                  </button>
+                  <button className="hover:text-red-600  text-brown">
+                    <i className="h-full fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
