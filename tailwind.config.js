@@ -6,9 +6,10 @@ export default {
       colors: {
         seashell: "#F1ECE6",
         skyblue: "#76b7cd",
-        lightbrown: "#6F4E37",
+        darkbrown: "#737373",
         brown: "#6F4F28",
         lightorange: "#D98326",
+        reddele: "#B30B04",
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
