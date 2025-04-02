@@ -1,29 +1,40 @@
 import React, { useState } from "react";
 import logoTodo from "../assets/image/todo-logo.png";
 import clearCompleted from "../assets/image/clear-complete.png";
+import ListTodo from "../components/ListTodo";
 const Todos = () => {
   const [valInputTodo, setValInputTodo] = useState({
     title: "",
     id: "",
   });
   const [listTodo, setListTodo] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
   const handleChangeInputTodo = (e) => {
-    const title = e.target.value;
+    const { name, value } = e.target;
     setValInputTodo({
       ...valInputTodo,
-      title,
+      [name]: value,
       id: Date.now(),
     });
   };
 
   const handleAddTodo = () => {
-    setListTodo([...listTodo, valInputTodo]);
-    setValInputTodo({
-      title: "",
-    });
+    setTimeout(() => {
+      setListTodo([...listTodo, valInputTodo]);
+      setValInputTodo({
+        title: "",
+      });
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 2000);
+    }, 500);
   };
   return (
     <div className="container mx-auto mt-10   rounded-lg flex justify-center">
+      {showAlert && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transition-all">
+          Đã thêm công việc!
+        </div>
+      )}
       <div className="  w-10/12 rounded-lg">
         <div className="flex justify-center p-5 backdrop-blur-md bg-seashell">
           <img src={logoTodo} alt="Logo todos" />
@@ -36,8 +47,9 @@ const Todos = () => {
                 onChange={handleChangeInputTodo}
                 placeholder="Add todos"
                 value={valInputTodo.title}
+                name="title"
                 type="text"
-                className="w-full bg-seashell rounded-l-full border-none  focus:ring-lightbrown focus:ring-1 p-2 "
+                className="w-full bg-seashell rounded-l-full border-none font-light focus:ring-lightbrown focus:ring-1 p-2 "
               />
               <button
                 disabled={valInputTodo.title.length === 0 ? true : false}
@@ -65,69 +77,14 @@ const Todos = () => {
           </div>
         </div>
         <div className="backdrop-blur-md bg-seashell rounded-lg ">
-          <div className="flex justify-center  ">
-            <div className="w-full  ">
-              <div className=" flex justify-between items-center pl-11 pr-12 ">
-                <div className="flex items-center   w-full ">
-                  <label
-                    htmlFor="isCheck"
-                    className="w-5 h-5 border-2 border-darkbrown rounded-full  cursor-pointer relative flex items-center justify-center has-[input:checked]:border-lightorange">
-                    <input
-                      type="checkbox"
-                      className="hidden peer"
-                      id="isCheck"
-                    />
-                    <span className="absolute w-5 h-5 flex items-center justify-center opacity-0 transition-opacity duration-200 peer-checked:opacity-100">
-                      <i className="fa-solid fa-check text-lightorange text-xs"></i>
-                    </span>
-                  </label>
-                  <p className="font-light  border-b-[1px] w-full py-4 pl-5 border-skyblue ">
-                    Professional Work No. 1
-                  </p>
-                </div>
-                <div className=" flex gap-3 my-6 ">
-                  <button className="hover:text-red-600 text-brown">
-                    <i className="fa-regular fa-pen-to-square"></i>
-                  </button>
-                  <button className="hover:text-red-600 text-reddele">
-                    <i className="fa-solid fa-trash"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex justify-center  ">
-            <div className="w-full  ">
-              <div className=" flex justify-between items-center pl-11 pr-12 ">
-                <div className="flex items-center   w-full ">
-                  <label
-                    htmlFor="isCheck2"
-                    className="w-5 h-5 border-2 rounded-full border-darkbrown cursor-pointer relative flex items-center justify-center has-[input:checked]:border-lightorange ">
-                    <input
-                      type="checkbox"
-                      className="hidden peer "
-                      id="isCheck2"
-                    />
-                    <span className="absolute w-5 h-5 flex items-center justify-center opacity-0 transition-opacity duration-200 peer-checked:opacity-100 ">
-                      <i className="fa-solid fa-check text-lightorange text-xs"></i>
-                    </span>
-                  </label>
-                  <p className="font-light  border-b-[1px] w-full py-4 pl-5 border-skyblue ">
-                    Professional Work No. 1
-                  </p>
-                </div>
-                <div className=" flex gap-3 my-6">
-                  <button className="hover:text-red-600 text-brown">
-                    <i className="fa-regular fa-pen-to-square"></i>
-                  </button>
-                  <button className="hover:text-red-600 text-reddele">
-                    <i className="fa-solid fa-trash"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
+          {listTodo.map((item) => {
+            return <ListTodo key={item.id} item={item} />;
+          })}
+          {listTodo.length === 0 ? (
+            <p className="text-3xl font-light text-center">NO DATA</p>
+          ) : (
+            <p className="hidden">NO DATA </p>
+          )}
           <div className="flex justify-end items-center gap-2 mr-[76px] mt-[77px]">
             <div>
               <img src={clearCompleted} alt=" Clear Completed" />
