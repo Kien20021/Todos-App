@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { DialogEdit } from "./dialogEdits/DialogEdit";
 
 const ItemTodo = ({ item }) => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="flex justify-center  ">
       <div className="w-full  ">
@@ -23,10 +25,12 @@ const ItemTodo = ({ item }) => {
             </p>
           </div>
           <div className=" flex gap-3 my-6 ">
-            <button className="hover:text-red-600 text-brown">
+            <button
+              onClick={() => setIsOpen(true)}
+              className="hover:text-red-600 text-brown">
               <i className="fa-regular fa-pen-to-square"></i>
             </button>
-
+            <DialogEdit isOpen={isOpen} setIsOpen={setIsOpen} item={item} />
             <button className="hover:text-red-600 text-reddele">
               <i className="fa-solid fa-trash"></i>
             </button>
