@@ -5,12 +5,21 @@ import clearCompleted from "../assets/image/clear-complete.png";
 import ItemTodo from "../components/ItemTodo";
 import Alerts from "../components/alerts/Alerts";
 const Todos = () => {
+  const totalStatus = {
+    success: { message: "Them Thanh Cong", type: "success" },
+    error: { message: "That bai", type: "error" },
+    warning: { message: "Canh bao", type: "warning" },
+    info: { message: "Thong tin", type: "info" },
+  };
   const [valInputTodo, setValInputTodo] = useState({
     title: "",
     id: "",
   });
   const [listTodo, setListTodo] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
+
+  const [inforAlerts, setInforAlerts] = useState({});
+
   const handleChangeInputTodo = (e) => {
     const { name, value } = e.target;
     setValInputTodo({
@@ -23,6 +32,7 @@ const Todos = () => {
   const handleAddTodo = () => {
     setListTodo([...listTodo, valInputTodo]);
     setShowAlert(true);
+    setInforAlerts(totalStatus.success);
     setValInputTodo({
       title: "",
     });
@@ -31,8 +41,8 @@ const Todos = () => {
     <div className="container mx-auto mt-20   rounded-lg flex justify-center">
       {showAlert && (
         <Alerts
-          message={"Them Thanh Cong "}
-          type={"success"}
+          message={inforAlerts.message}
+          type={inforAlerts.type}
           onClose={() => setShowAlert(false)}
         />
       )}
@@ -50,7 +60,7 @@ const Todos = () => {
                 value={valInputTodo.title}
                 name="title"
                 type="text"
-                className="w-full bg-seashell rounded-l-full border-none font-light focus:ring-lightbrown focus:ring-1 p-2 px-5 "
+                className="w-full bg-seashell rounded-l-full border-inherit focus:border focus:border-skyblue font-light focus:ring-0  focus:outline-none p-2 px-5 "
               />
               <button
                 disabled={valInputTodo.title.length === 0 ? true : false}
@@ -69,7 +79,7 @@ const Todos = () => {
               <input
                 placeholder="Search Todos"
                 type="text"
-                className="w-full bg-seashell rounded-l-full border-none  focus:ring-lightbrown focus:ring-1 p-2 px-5 "
+                className="w-full bg-seashell rounded-l-full border-inherit focus:border focus:border-purple-400 font-light focus:ring-0  focus:outline-none p-2 px-5 "
               />
               <button className=" bg-purple-400 text-white font-semibold text-xl py-[10.5px] rounded-r-full px-[18px]">
                 SEARCH
