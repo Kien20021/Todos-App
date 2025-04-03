@@ -3,6 +3,7 @@ import logoTodo from "../assets/image/todo-logo.png";
 import clearCompleted from "../assets/image/clear-complete.png";
 
 import ItemTodo from "../components/ItemTodo";
+import Alerts from "../components/alerts/Alerts";
 const Todos = () => {
   const [valInputTodo, setValInputTodo] = useState({
     title: "",
@@ -20,21 +21,20 @@ const Todos = () => {
   };
 
   const handleAddTodo = () => {
-    setTimeout(() => {
-      setListTodo([...listTodo, valInputTodo]);
-      setValInputTodo({
-        title: "",
-      });
-      setShowAlert(true);
-      setTimeout(() => setShowAlert(false), 2000);
-    }, 500);
+    setListTodo([...listTodo, valInputTodo]);
+    setShowAlert(true);
+    setValInputTodo({
+      title: "",
+    });
   };
   return (
     <div className="container mx-auto mt-10   rounded-lg flex justify-center">
       {showAlert && (
-        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transition-all">
-          Đã thêm công việc!
-        </div>
+        <Alerts
+          message={"Them Thanh Cong "}
+          type={"success"}
+          onClose={() => setShowAlert(false)}
+        />
       )}
       <div className="  w-10/12 rounded-lg">
         <div className="flex justify-center p-5 backdrop-blur-md bg-seashell">
