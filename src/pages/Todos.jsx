@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import logoTodo from "../assets/image/todo-logo.png";
 import clearCompleted from "../assets/image/clear-complete.png";
-import ListTodo from "../components/ListTodo";
+
+import ItemTodo from "../components/ItemTodo";
 const Todos = () => {
   const [valInputTodo, setValInputTodo] = useState({
     title: "",
@@ -78,12 +79,10 @@ const Todos = () => {
         </div>
         <div className="backdrop-blur-md bg-seashell rounded-lg ">
           {listTodo.map((item) => {
-            return <ListTodo key={item.id} item={item} />;
+            return <ItemTodo key={item.id} item={item} />;
           })}
-          {listTodo.length === 0 ? (
-            <p className="text-3xl font-light text-center">NO DATA</p>
-          ) : (
-            <p className="hidden">NO DATA </p>
+          {listTodo.length === 0 && (
+            <p className="text-3xl font-light text-center pt-10">NO DATA</p>
           )}
           <div className="flex justify-end items-center gap-2 mr-[76px] mt-[77px]">
             <div>

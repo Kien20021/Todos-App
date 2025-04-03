@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 
-const ListTodo = ({ item }) => {
+const ItemTodo = ({ item }) => {
   return (
     <div className="flex justify-center  ">
       <div className="w-full  ">
@@ -22,6 +22,7 @@ const ListTodo = ({ item }) => {
             <button className="hover:text-red-600 text-brown">
               <i className="fa-regular fa-pen-to-square"></i>
             </button>
+
             <button className="hover:text-red-600 text-reddele">
               <i className="fa-solid fa-trash"></i>
             </button>
@@ -32,4 +33,4 @@ const ListTodo = ({ item }) => {
   );
 };
 
-export default ListTodo;
+export default ItemTodo;
