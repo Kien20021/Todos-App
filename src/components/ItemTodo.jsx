@@ -2,7 +2,16 @@ import React, { useState } from "react";
 import { DialogEdit } from "./dialogEdits/DialogEdit";
 
 const ItemTodo = ({ item }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenDialogEdit, setIsOpenDialogEdit] = useState(false);
+  const showDialogEdit = () => {
+    setIsOpenDialogEdit(true);
+  };
+  const handleOK = () => {
+    setIsOpenDialogEdit(false);
+  };
+  const handleCancel = () => {
+    setIsOpenDialogEdit(false);
+  };
   return (
     <div className="flex justify-center  ">
       <div className="w-full  ">
@@ -26,11 +35,16 @@ const ItemTodo = ({ item }) => {
           </div>
           <div className=" flex gap-3 my-6 ">
             <button
-              onClick={() => setIsOpen(true)}
+              onClick={showDialogEdit}
               className="hover:text-red-600 text-brown">
               <i className="fa-regular fa-pen-to-square"></i>
             </button>
-            <DialogEdit isOpen={isOpen} setIsOpen={setIsOpen} item={item} />
+            <DialogEdit
+              open={isOpenDialogEdit}
+              item={item}
+              onOK={handleOK}
+              onCancel={handleCancel}
+            />
             <button className="hover:text-red-600 text-reddele">
               <i className="fa-solid fa-trash"></i>
             </button>
