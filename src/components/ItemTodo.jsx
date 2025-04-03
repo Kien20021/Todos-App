@@ -7,9 +7,13 @@ const ItemTodo = ({ item }) => {
         <div className=" flex justify-between items-center pl-11 pr-12 ">
           <div className="flex items-center   w-full ">
             <label
-              htmlFor="isCheck"
+              htmlFor={`isCheck${item.id}`}
               className="w-5 h-5 border-2 border-darkbrown rounded-full  cursor-pointer relative flex items-center justify-center has-[input:checked]:border-lightorange">
-              <input type="checkbox" className="hidden peer" id="isCheck" />
+              <input
+                type="checkbox"
+                className="hidden peer"
+                id={`isCheck${item.id}`}
+              />
               <span className="absolute w-5 h-5 flex items-center justify-center opacity-0 transition-opacity duration-200 peer-checked:opacity-100">
                 <i className="fa-solid fa-check text-lightorange text-xs"></i>
               </span>
