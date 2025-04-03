@@ -1,5 +1,5 @@
 import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 
 const Alerts = ({ message, type, onClose }) => {
   const alertStyles = {
@@ -14,6 +14,11 @@ const Alerts = ({ message, type, onClose }) => {
     warning: <AlertTriangle className="inline-block mr-2" />,
     info: <Info className="inline-block mr-2" />,
   };
+  useEffect(() => {
+    const timer = setTimeout(onClose, 2000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
   return (
     <div
       className={`fixed top-4 right-4 text-white px-4 py-2 rounded-lg shadow-lg transition-all ${alertStyles[type]}`}>
