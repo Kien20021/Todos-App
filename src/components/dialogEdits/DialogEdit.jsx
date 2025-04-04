@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 
-export const DialogEdit = ({
-  open,
-
-  item,
-  onOK,
-  onCancel,
-}) => {
-  if (!open) return null;
+export const DialogEdit = ({ openDialogEdit, item, onOK, onCancel }) => {
+  if (!openDialogEdit) return null;
   const [newValTitle, setNewValTitle] = useState("");
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
@@ -31,7 +25,7 @@ export const DialogEdit = ({
           </button>
           <button
             variant="outline"
-            className=" p-2 rounded-lg hover:bg-black hover:text-white transition-all duration-300 "
+            className="p-2 rounded-lg hover:bg-black hover:text-white transition-all duration-300"
             onClick={onCancel}>
             Đóng
           </button>

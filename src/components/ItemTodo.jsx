@@ -6,10 +6,10 @@ const ItemTodo = ({ item }) => {
   const showDialogEdit = () => {
     setIsOpenDialogEdit(true);
   };
-  const handleOK = () => {
+  const handleOkEdit = () => {
     setIsOpenDialogEdit(false);
   };
-  const handleCancel = () => {
+  const handleCancelEdit = () => {
     setIsOpenDialogEdit(false);
   };
   return (
@@ -40,10 +40,10 @@ const ItemTodo = ({ item }) => {
               <i className="fa-regular fa-pen-to-square"></i>
             </button>
             <DialogEdit
-              open={isOpenDialogEdit}
+              openDialogEdit={isOpenDialogEdit}
               item={item}
-              onOK={handleOK}
-              onCancel={handleCancel}
+              onOK={handleOkEdit}
+              onCancel={handleCancelEdit}
             />
             <button className="hover:text-red-600 text-reddele">
               <i className="fa-solid fa-trash"></i>
