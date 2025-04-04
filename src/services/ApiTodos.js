@@ -7,5 +7,8 @@ const ApiServiceTodos = {
   apiGetTodo: async () => {
     return axios.get(API_TODOS);
   },
+  apiDeleteTodo: async (id) => {
+    return axios.delete(`${API_TODOS}/${id}`);
+  },
 };
 export default ApiServiceTodos;

@@ -35,6 +35,12 @@ const Todos = () => {
       });
     }
   };
+  const onDeleteTodo = async (id) => {
+    const res = await ApiServiceTodos.apiDeleteTodo(id);
+    if (res.status === 200) {
+      fetchDataTodo();
+    }
+  };
   const fetchDataTodo = async () => {
     const res = await ApiServiceTodos.apiGetTodo();
     if (res.status === 200) {
@@ -96,7 +102,9 @@ const Todos = () => {
         </div>
         <div className="backdrop-blur-md bg-seashell rounded-lg ">
           {listTodo.map((item) => {
-            return <ItemTodo key={item.id} item={item} />;
+            return (
+              <ItemTodo onDeleteTodo={onDeleteTodo} key={item.id} item={item} />
+            );
           })}
           {listTodo.length === 0 && (
             <p className="text-3xl font-light text-center pt-10">NO DATA</p>
