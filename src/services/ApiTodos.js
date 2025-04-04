@@ -13,5 +13,8 @@ const ApiServiceTodos = {
   apiEditTodo: async (data) => {
     return axios.put(`${API_TODOS}/${data.id}`, { title: data.title });
   },
+  apiFilterTodo: async (title) => {
+    return axios.get(`${API_TODOS}?q=${title}`);
+  },
 };
 export default ApiServiceTodos;

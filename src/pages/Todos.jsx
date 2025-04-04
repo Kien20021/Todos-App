@@ -14,6 +14,9 @@ const Todos = () => {
   const [valInputTodo, setValInputTodo] = useState({
     title: "",
   });
+  const [valFilterTodo, setValFilterTodo] = useState({
+    title: "",
+  });
   const [listTodo, setListTodo] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [inforAlerts, setInforAlerts] = useState({});
@@ -24,6 +27,27 @@ const Todos = () => {
       [name]: value,
     });
   };
+  const handleChangeFilterTodo = (e) => {
+    const { name, value } = e.target;
+    setValFilterTodo({
+      ...valFilterTodo,
+      [name]: value,
+    });
+  };
+
+  const handleFilterTodo = async (valFilterTodo) => {
+    if (!valFilterTodo.title.trim()) {
+      const res = await ApiServiceTodos.apiGetTodo();
+      setListTodo(res.data);
+      return;
+    }
+    const res = await ApiServiceTodos.apiFilterTodo(valFilterTodo);
+    const dataFilter = res.data.filter((item) => {
+      return item.title.trim() === valFilterTodo.title.trim();
+    });
+    setListTodo(dataFilter);
+  };
+
   const handleAddTodo = async () => {
     const res = await ApiServiceTodos.apiPostTodo(valInputTodo);
     if (res.status === 201) {
@@ -35,13 +59,13 @@ const Todos = () => {
       });
     }
   };
-  const onEditTodo = async (data) => {
+  const handleEditTodo = async (data) => {
     const res = await ApiServiceTodos.apiEditTodo(data);
     if (res.status === 200) {
       fetchDataTodo();
     }
   };
-  const onDeleteTodo = async (id) => {
+  const handleDeleteTodo = async (id) => {
     const res = await ApiServiceTodos.apiDeleteTodo(id);
     if (res.status === 200) {
       fetchDataTodo();
@@ -96,11 +120,15 @@ const Todos = () => {
           <div className="flex justify-center mt-5">
             <div className="w-full flex">
               <input
+                name="title"
+                onChange={handleChangeFilterTodo}
                 placeholder="Search Todos"
                 type="text"
                 className="w-full bg-seashell rounded-l-full border-inherit focus:border focus:border-purple-400 font-light focus:ring-0  focus:outline-none p-2 px-5 "
               />
-              <button className=" bg-purple-400 text-white font-semibold text-xl py-[10.5px] rounded-r-full px-[18px]">
+              <button
+                onClick={() => handleFilterTodo(valFilterTodo)}
+                className=" bg-purple-400 text-white font-semibold text-xl py-[10.5px] rounded-r-full px-[18px]">
                 SEARCH
               </button>
             </div>
@@ -110,8 +138,8 @@ const Todos = () => {
           {listTodo.map((item) => {
             return (
               <ItemTodo
-                onEditTodo={onEditTodo}
-                onDeleteTodo={onDeleteTodo}
+                onEditTodo={handleEditTodo}
+                onDeleteTodo={handleDeleteTodo}
                 key={item.id}
                 item={item}
               />
