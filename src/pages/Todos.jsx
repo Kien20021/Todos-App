@@ -35,6 +35,12 @@ const Todos = () => {
       });
     }
   };
+  const handleDeleteTodo = async (id) => {
+    const res = await ApiServiceTodos.apiDeleteTodo(id);
+    if (res.status === 200) {
+      fetchDataTodo();
+    }
+  };
   const fetchDataTodo = async () => {
     const res = await ApiServiceTodos.apiGetTodo();
     if (res.status === 200) {
@@ -98,7 +104,7 @@ const Todos = () => {
           {listTodo.map((item) => {
             return (
               <ItemTodo
-                fetchDataTodo={fetchDataTodo}
+                handleDeleteTodo={handleDeleteTodo}
                 key={item.id}
                 item={item}
               />

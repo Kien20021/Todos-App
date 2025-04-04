@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { DialogEdit } from "./dialogEdits/DialogEdit";
 import DialogDelete from "./dialogDelete/DialogDelete";
-import ApiServiceTodos from "../services/ApiTodos";
-
-const ItemTodo = ({ item, fetchDataTodo }) => {
+const ItemTodo = ({ item, handleDeleteTodo }) => {
   const [isOpenDialogEdit, setIsOpenDialogEdit] = useState(false);
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const showDialogEdit = () => {
@@ -19,11 +17,8 @@ const ItemTodo = ({ item, fetchDataTodo }) => {
   const showDialogDelete = () => {
     setOpenDialogDelete(true);
   };
-  const handleOkDelete = async (id) => {
-    const res = await ApiServiceTodos.apiDeleteTodo(id);
-    if (res.status === 200) {
-      fetchDataTodo();
-    }
+  const handleOkDelete = (id) => {
+    handleDeleteTodo(id);
     setOpenDialogDelete(false);
   };
   const handleCancelDelete = () => {
