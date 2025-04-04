@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logoTodo from "../assets/image/todo-logo.png";
 import clearCompleted from "../assets/image/clear-complete.png";
 import ItemTodo from "../components/ItemTodo";
 import Alerts from "../components/alerts/Alerts";
+import ApiServiceTodos from "../services/ApiTodos";
 const Todos = () => {
   const totalStatus = {
     success: { message: "Them Thanh Cong", type: "success" },
@@ -12,7 +13,6 @@ const Todos = () => {
   };
   const [valInputTodo, setValInputTodo] = useState({
     title: "",
-    id: "",
   });
   const [listTodo, setListTodo] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
@@ -22,17 +22,28 @@ const Todos = () => {
     setValInputTodo({
       ...valInputTodo,
       [name]: value,
-      id: Date.now(),
     });
   };
-  const handleAddTodo = () => {
-    setListTodo([...listTodo, valInputTodo]);
-    setShowAlert(true);
-    setInforAlerts(totalStatus.success);
-    setValInputTodo({
-      title: "",
-    });
+  const handleAddTodo = async () => {
+    const res = await ApiServiceTodos.apiPostTodo(valInputTodo);
+    if (res.status === 201) {
+      fetchDataTodo();
+      setShowAlert(true);
+      setInforAlerts(totalStatus.success);
+      setValInputTodo({
+        title: "",
+      });
+    }
   };
+  const fetchDataTodo = async () => {
+    const res = await ApiServiceTodos.apiGetTodo();
+    if (res.status === 200) {
+      setListTodo(res.data);
+    }
+  };
+  useEffect(() => {
+    fetchDataTodo();
+  }, []);
   return (
     <div className="container mx-auto mt-20   rounded-lg flex justify-center">
       {showAlert && (
