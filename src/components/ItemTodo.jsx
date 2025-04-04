@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { DialogEdit } from "./dialogEdits/DialogEdit";
 import DialogDelete from "./dialogDelete/DialogDelete";
-const ItemTodo = ({ item, handleDeleteTodo }) => {
+const ItemTodo = ({ item, onDeleteTodo }) => {
   const [isOpenDialogEdit, setIsOpenDialogEdit] = useState(false);
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const showDialogEdit = () => {
@@ -18,7 +18,7 @@ const ItemTodo = ({ item, handleDeleteTodo }) => {
     setOpenDialogDelete(true);
   };
   const handleOkDelete = (id) => {
-    handleDeleteTodo(id);
+    onDeleteTodo(id);
     setOpenDialogDelete(false);
   };
   const handleCancelDelete = () => {
