@@ -35,6 +35,12 @@ const Todos = () => {
       });
     }
   };
+  const onEditTodo = async (data) => {
+    const res = await ApiServiceTodos.apiEditTodo(data);
+    if (res.status === 200) {
+      fetchDataTodo();
+    }
+  };
   const onDeleteTodo = async (id) => {
     const res = await ApiServiceTodos.apiDeleteTodo(id);
     if (res.status === 200) {
@@ -103,7 +109,12 @@ const Todos = () => {
         <div className="backdrop-blur-md bg-seashell rounded-lg ">
           {listTodo.map((item) => {
             return (
-              <ItemTodo onDeleteTodo={onDeleteTodo} key={item.id} item={item} />
+              <ItemTodo
+                onEditTodo={onEditTodo}
+                onDeleteTodo={onDeleteTodo}
+                key={item.id}
+                item={item}
+              />
             );
           })}
           {listTodo.length === 0 && (

@@ -10,5 +10,8 @@ const ApiServiceTodos = {
   apiDeleteTodo: async (id) => {
     return axios.delete(`${API_TODOS}/${id}`);
   },
+  apiEditTodo: async (data) => {
+    return axios.put(`${API_TODOS}/${data.id}`, { title: data.title });
+  },
 };
 export default ApiServiceTodos;
