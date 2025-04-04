@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import logoTodo from "../assets/image/todo-logo.png";
 import clearCompleted from "../assets/image/clear-complete.png";
-
 import ItemTodo from "../components/ItemTodo";
 import Alerts from "../components/alerts/Alerts";
 const Todos = () => {
@@ -17,9 +16,7 @@ const Todos = () => {
   });
   const [listTodo, setListTodo] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
-
   const [inforAlerts, setInforAlerts] = useState({});
-
   const handleChangeInputTodo = (e) => {
     const { name, value } = e.target;
     setValInputTodo({
@@ -28,7 +25,6 @@ const Todos = () => {
       id: Date.now(),
     });
   };
-
   const handleAddTodo = () => {
     setListTodo([...listTodo, valInputTodo]);
     setShowAlert(true);

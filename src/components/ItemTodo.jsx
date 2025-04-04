@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { DialogEdit } from "./dialogEdits/DialogEdit";
+import DialogDelete from "./dialogDelete/DialogDelete";
 
 const ItemTodo = ({ item }) => {
   const [isOpenDialogEdit, setIsOpenDialogEdit] = useState(false);
+  const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const showDialogEdit = () => {
     setIsOpenDialogEdit(true);
   };
@@ -11,6 +13,16 @@ const ItemTodo = ({ item }) => {
   };
   const handleCancelEdit = () => {
     setIsOpenDialogEdit(false);
+  };
+
+  const showDialogDelete = () => {
+    setOpenDialogDelete(true);
+  };
+  const handleOkDelete = () => {
+    setOpenDialogDelete(false);
+  };
+  const handleCancelDelete = () => {
+    setOpenDialogDelete(false);
   };
   return (
     <div className="flex justify-center  ">
@@ -34,20 +46,31 @@ const ItemTodo = ({ item }) => {
             </p>
           </div>
           <div className=" flex gap-3 my-6 ">
-            <button
-              onClick={showDialogEdit}
-              className="hover:text-red-600 text-brown">
-              <i className="fa-regular fa-pen-to-square"></i>
-            </button>
-            <DialogEdit
-              openDialogEdit={isOpenDialogEdit}
-              item={item}
-              onOK={handleOkEdit}
-              onCancel={handleCancelEdit}
-            />
-            <button className="hover:text-red-600 text-reddele">
-              <i className="fa-solid fa-trash"></i>
-            </button>
+            <div>
+              <button
+                onClick={showDialogEdit}
+                className="hover:text-red-600 text-brown">
+                <i className="fa-regular fa-pen-to-square"></i>
+              </button>
+              <DialogEdit
+                openDialogEdit={isOpenDialogEdit}
+                item={item}
+                onOK={handleOkEdit}
+                onCancel={handleCancelEdit}
+              />
+            </div>
+            <div>
+              <button
+                onClick={showDialogDelete}
+                className="hover:text-red-600 text-reddele">
+                <i className="fa-solid fa-trash"></i>
+              </button>
+              <DialogDelete
+                openDialogDelete={openDialogDelete}
+                onOK={handleOkDelete}
+                onCancel={handleCancelDelete}
+              />
+            </div>
           </div>
         </div>
       </div>
