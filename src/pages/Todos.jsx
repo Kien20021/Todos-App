@@ -32,7 +32,6 @@ const Todos = () => {
     setValInputTodo({
       title: "",
     });
-    console.log("1111111111");
   };
   return (
     <div className="container mx-auto mt-20   rounded-lg flex justify-center">
