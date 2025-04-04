@@ -96,7 +96,13 @@ const Todos = () => {
         </div>
         <div className="backdrop-blur-md bg-seashell rounded-lg ">
           {listTodo.map((item) => {
-            return <ItemTodo key={item.id} item={item} />;
+            return (
+              <ItemTodo
+                fetchDataTodo={fetchDataTodo}
+                key={item.id}
+                item={item}
+              />
+            );
           })}
           {listTodo.length === 0 && (
             <p className="text-3xl font-light text-center pt-10">NO DATA</p>
