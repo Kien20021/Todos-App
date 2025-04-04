@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { DialogEdit } from "./dialogEdits/DialogEdit";
 import DialogDelete from "./dialogDelete/DialogDelete";
-const ItemTodo = ({ item, onDeleteTodo }) => {
+const ItemTodo = ({ item, onDeleteTodo, onEditTodo }) => {
   const [isOpenDialogEdit, setIsOpenDialogEdit] = useState(false);
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const showDialogEdit = () => {
     setIsOpenDialogEdit(true);
   };
-  const handleOkEdit = () => {
+  const handleOkEdit = (data) => {
+    onEditTodo(data);
     setIsOpenDialogEdit(false);
   };
   const handleCancelEdit = () => {
@@ -55,7 +56,9 @@ const ItemTodo = ({ item, onDeleteTodo }) => {
               <DialogEdit
                 openDialogEdit={isOpenDialogEdit}
                 item={item}
-                onOK={handleOkEdit}
+                onOK={(newValTitle) =>
+                  handleOkEdit({ id: item.id, title: newValTitle })
+                }
                 onCancel={handleCancelEdit}
               />
             </div>

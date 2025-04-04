@@ -20,7 +20,7 @@ export const DialogEdit = ({ openDialogEdit, item, onOK, onCancel }) => {
             className={`p-2  rounded-lg hover:bg-blue-500 hover:text-white transition-all duration-300 ${
               newValTitle.length === 0 ? "cursor-not-allowed" : "cursor-pointer"
             }`}
-            onClick={onOK}>
+            onClick={() => onOK(newValTitle)}>
             Lưu
           </button>
           <button
