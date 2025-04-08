@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { DialogEdit } from "./dialogEdits/DialogEdit";
 import DialogDelete from "./dialogDelete/DialogDelete";
-const ItemTodo = ({ item, onEditTodo, onDeleteTodo }) => {
+const ItemTodo = ({ item, onEditTodo, onDeleteTodo, onToggleChecked }) => {
   const [isOpenDialogEdit, setIsOpenDialogEdit] = useState(false);
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const [isCheckedStatus, setIsCheckedStatus] = useState(false);
@@ -27,8 +27,9 @@ const ItemTodo = ({ item, onEditTodo, onDeleteTodo }) => {
     setOpenDialogDelete(false);
   };
 
-  const handleCheckboxChange = () => {
+  const handleCheckboxChange = (id) => {
     setIsCheckedStatus(!isCheckedStatus);
+    onToggleChecked(id);
   };
   return (
     <div className="flex justify-center  ">
@@ -43,7 +44,7 @@ const ItemTodo = ({ item, onEditTodo, onDeleteTodo }) => {
                 className="hidden peer"
                 id={`isCheck${item.id}`}
                 checked={isCheckedStatus}
-                onChange={handleCheckboxChange}
+                onChange={() => handleCheckboxChange(item.id)}
               />
               <span className="absolute w-5 h-5 flex items-center justify-center opacity-0 transition-opacity duration-200 peer-checked:opacity-100">
                 <i className="fa-solid fa-check text-lightorange text-xs"></i>
