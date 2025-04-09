@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import clearCompleted from "../assets/image/clear-complete.png";
 import ItemTodo from "../components/ItemTodo";
 import Alerts from "../components/alerts/Alerts";
-import ApiServiceTodos from "../services/ApiTodos";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,14 +11,12 @@ import {
   editTodo,
   fetchDataTodo,
   filterTodo,
-} from "../features/Todo/TodoSlice";
+} from "../features/Todo/listTodoSlice";
 import {
   setOffShowAlerts,
   setOnShowAlerts,
 } from "../features/alerts/alertSlice";
-
 const Todos = () => {
-  // bat dau lam sua redux tool kit
   const totalStatus = {
     success: { message: "Them Thanh Cong", type: "success" },
     error: { message: "That bai", type: "error" },
@@ -32,12 +29,11 @@ const Todos = () => {
   const [valFilterTodo, setValFilterTodo] = useState({
     title: "",
   });
-  const listTodo = useSelector((state) => state.Todo.data);
+  const listTodo = useSelector((state) => state.listTodo.data);
   const showAlert = useSelector((state) => state.showAlert.showAlert);
   const [inforAlerts, setInforAlerts] = useState({});
   const [checkedItems, setCheckedItems] = useState([]);
   const dispatch = useDispatch();
-
   const handleChangeInputTodo = (e) => {
     const { name, value } = e.target;
     setValInputTodo({
@@ -45,7 +41,6 @@ const Todos = () => {
       [name]: value,
     });
   };
-
   const handleChangeFilterTodo = (e) => {
     const { name, value } = e.target;
     setValFilterTodo({
@@ -53,7 +48,6 @@ const Todos = () => {
       [name]: value,
     });
   };
-
   const handleFilterTodo = (valFilterTodo) => {
     dispatch(filterTodo(valFilterTodo));
   };
@@ -66,7 +60,6 @@ const Todos = () => {
       title: "",
     });
   };
-
   const handleEditTodo = (data) => {
     dispatch(editTodo(data));
   };
@@ -84,7 +77,6 @@ const Todos = () => {
     }
     setCheckedItems([]);
   };
-
   useEffect(() => {
     dispatch(fetchDataTodo());
   }, [dispatch]);
@@ -154,7 +146,6 @@ const Todos = () => {
           {listTodo.length === 0 && (
             <p className="text-3xl font-light text-center pt-10">NO DATA</p>
           )}
-
           <div className="mr-[76px]  ml-11 mt-[77px] flex items-center justify-between">
             <div>
               <NavLink

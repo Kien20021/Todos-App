@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import ApiServiceTodos from "../../services/ApiTodos";
 
 export const fetchDataTodo = createAsyncThunk(
-  "Todo/fetchDataTodo",
+  "listTodo/fetchDataTodo",
   async (_, thunkAPI) => {
     try {
       const res = await ApiServiceTodos.apiGetTodo();
@@ -17,7 +17,7 @@ export const fetchDataTodo = createAsyncThunk(
   }
 );
 export const addTodo = createAsyncThunk(
-  "Todo/addTodo",
+  "listTodo/addTodo",
   async (newTodo, thunkAPI) => {
     try {
       const res = await ApiServiceTodos.apiPostTodo(newTodo);
@@ -33,7 +33,7 @@ export const addTodo = createAsyncThunk(
   }
 );
 export const deleteTodo = createAsyncThunk(
-  "Todo/deleteTodo",
+  "listTodo/deleteTodo",
   async (id, thunkAPI) => {
     try {
       const res = await ApiServiceTodos.apiDeleteTodo(id);
@@ -49,7 +49,7 @@ export const deleteTodo = createAsyncThunk(
   }
 );
 export const editTodo = createAsyncThunk(
-  "Todo,editTodo",
+  "listTodo,editTodo",
   async (data, thunkAPI) => {
     try {
       const res = await ApiServiceTodos.apiEditTodo(data);
@@ -66,7 +66,7 @@ export const editTodo = createAsyncThunk(
 );
 
 export const filterTodo = createAsyncThunk(
-  "Todo/filterTodo",
+  "listTodo/filterTodo",
   async (valFilterTodo, thunkAPI) => {
     try {
       const title = valFilterTodo.title.trim();
@@ -83,8 +83,8 @@ export const filterTodo = createAsyncThunk(
     }
   }
 );
-const TodoSlice = createSlice({
-  name: "Todo",
+const listTodoSlice = createSlice({
+  name: "listTodo",
   initialState: {
     data: [],
     error: null,
@@ -117,5 +117,5 @@ const TodoSlice = createSlice({
   },
 });
 
-export const { setListTodo } = TodoSlice.actions;
-export default TodoSlice.reducer;
+export const { setListTodo } = listTodoSlice.actions;
+export default listTodoSlice.reducer;
