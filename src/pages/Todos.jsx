@@ -6,7 +6,13 @@ import Alerts from "../components/alerts/Alerts";
 import ApiServiceTodos from "../services/ApiTodos";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setListTodo } from "../features/listTodo/listTodoSlice";
+import {
+  addTodo,
+  deleteTodo,
+  editTodo,
+  fetchDataTodo,
+  filterTodo,
+} from "../features/Todo/TodoSlice";
 import {
   setOffShowAlerts,
   setOnShowAlerts,
@@ -26,7 +32,7 @@ const Todos = () => {
   const [valFilterTodo, setValFilterTodo] = useState({
     title: "",
   });
-  const listTodo = useSelector((state) => state.listTodo.data);
+  const listTodo = useSelector((state) => state.Todo.data);
   const showAlert = useSelector((state) => state.showAlert.showAlert);
   const [inforAlerts, setInforAlerts] = useState({});
   const [checkedItems, setCheckedItems] = useState([]);
@@ -48,41 +54,24 @@ const Todos = () => {
     });
   };
 
-  const handleFilterTodo = async (valFilterTodo) => {
-    if (!valFilterTodo.title.trim()) {
-      const res = await ApiServiceTodos.apiGetTodo();
-      dispatch(setListTodo(res.data));
-      return;
-    }
-    const res = await ApiServiceTodos.apiFilterTodo(valFilterTodo);
-    const dataFilter = res.data.filter((item) => {
-      return item.title.trim() === valFilterTodo.title.trim();
+  const handleFilterTodo = (valFilterTodo) => {
+    dispatch(filterTodo(valFilterTodo));
+  };
+  const handleAddTodo = () => {
+    if (valInputTodo.title.trim() === "") return;
+    dispatch(addTodo(valInputTodo));
+    dispatch(setOnShowAlerts());
+    setInforAlerts(totalStatus.success);
+    setValInputTodo({
+      title: "",
     });
-    dispatch(setListTodo(dataFilter));
   };
 
-  const handleAddTodo = async () => {
-    const res = await ApiServiceTodos.apiPostTodo(valInputTodo);
-    if (res.status === 201) {
-      fetchDataTodo();
-      dispatch(setOnShowAlerts());
-      setInforAlerts(totalStatus.success);
-      setValInputTodo({
-        title: "",
-      });
-    }
+  const handleEditTodo = (data) => {
+    dispatch(editTodo(data));
   };
-  const handleEditTodo = async (data) => {
-    const res = await ApiServiceTodos.apiEditTodo(data);
-    if (res.status === 200) {
-      fetchDataTodo();
-    }
-  };
-  const handleDeleteTodo = async (id) => {
-    const res = await ApiServiceTodos.apiDeleteTodo(id);
-    if (res.status === 200) {
-      fetchDataTodo();
-    }
+  const handleDeleteTodo = (id) => {
+    dispatch(deleteTodo(id));
   };
   const handleToggleChecked = (id) => {
     setCheckedItems((prev) =>
@@ -95,15 +84,10 @@ const Todos = () => {
     }
     setCheckedItems([]);
   };
-  const fetchDataTodo = async () => {
-    const res = await ApiServiceTodos.apiGetTodo();
-    if (res.status === 200) {
-      dispatch(setListTodo(res.data));
-    }
-  };
+
   useEffect(() => {
-    fetchDataTodo();
-  }, []);
+    dispatch(fetchDataTodo());
+  }, [dispatch]);
 
   return (
     <div className="container mx-auto mt-5   rounded-lg flex justify-center">
