@@ -4,61 +4,65 @@ import clearCompleted from "../assets/image/clear-complete.png";
 import ItemTodo from "../components/ItemTodo";
 import Alerts from "../components/alerts/Alerts";
 import ApiServiceTodos from "../services/ApiTodos";
+import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setClearVal,
+  setValTodoInput,
+} from "../redux-toolkit/features/valTodoInputSlice";
+import { setValFilterTodoInput } from "../redux-toolkit/features/valFilterTodoInputSlice";
+import { setListTodo } from "../redux-toolkit/features/listTodoSlice";
+import {
+  setOffShowAlerts,
+  setOnShowAlerts,
+} from "../redux-toolkit/features/alertSlice";
+import { setInforAlert } from "../redux-toolkit/features/inforAlertSlice";
+import {
+  setClearCheckedItems,
+  setToggleCheckedItem,
+} from "../redux-toolkit/features/checkedItemSlice";
 const Todos = () => {
+  // bat dau lam sua redux tool kit
   const totalStatus = {
     success: { message: "Them Thanh Cong", type: "success" },
     error: { message: "That bai", type: "error" },
     warning: { message: "Canh bao", type: "warning" },
     info: { message: "Thong tin", type: "info" },
   };
-  const [valInputTodo, setValInputTodo] = useState({
-    title: "",
-  });
-  const [valFilterTodo, setValFilterTodo] = useState({
-    title: "",
-  });
-  const [listTodo, setListTodo] = useState([]);
-  const [showAlert, setShowAlert] = useState(false);
-  const [inforAlerts, setInforAlerts] = useState({});
-  const [checkedItems, setCheckedItems] = useState([]);
-
+  const valInputTodo = useSelector((state) => state.valTodoInput);
+  const valFilterTodo = useSelector((state) => state.valFilterTodoInput);
+  const listTodo = useSelector((state) => state.listTodo.data);
+  const showAlert = useSelector((state) => state.showAlert.showAlert);
+  const inforAlerts = useSelector((state) => state.inforAlert);
+  const checkedItem = useSelector((state) => state.checkedItem);
+  const dispatch = useDispatch();
   const handleChangeInputTodo = (e) => {
     const { name, value } = e.target;
-    setValInputTodo({
-      ...valInputTodo,
-      [name]: value,
-    });
+    dispatch(setValTodoInput({ name, value }));
   };
   const handleChangeFilterTodo = (e) => {
     const { name, value } = e.target;
-    setValFilterTodo({
-      ...valFilterTodo,
-      [name]: value,
-    });
+    dispatch(setValFilterTodoInput({ name, value }));
   };
-
   const handleFilterTodo = async (valFilterTodo) => {
     if (!valFilterTodo.title.trim()) {
       const res = await ApiServiceTodos.apiGetTodo();
-      setListTodo(res.data);
+      dispatch(setListTodo(res.data));
       return;
     }
     const res = await ApiServiceTodos.apiFilterTodo(valFilterTodo);
     const dataFilter = res.data.filter((item) => {
       return item.title.trim() === valFilterTodo.title.trim();
     });
-    setListTodo(dataFilter);
+    dispatch(setListTodo(dataFilter));
   };
-
   const handleAddTodo = async () => {
     const res = await ApiServiceTodos.apiPostTodo(valInputTodo);
     if (res.status === 201) {
       fetchDataTodo();
-      setShowAlert(true);
-      setInforAlerts(totalStatus.success);
-      setValInputTodo({
-        title: "",
-      });
+      dispatch(setOnShowAlerts());
+      dispatch(setInforAlert(totalStatus.success));
+      dispatch(setClearVal());
     }
   };
   const handleEditTodo = async (data) => {
@@ -74,33 +78,30 @@ const Todos = () => {
     }
   };
   const handleToggleChecked = (id) => {
-    setCheckedItems((prev) =>
-      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
-    );
+    dispatch(setToggleCheckedItem(id));
   };
   const handleClearTodosCompleted = async () => {
-    for (let id of checkedItems) {
+    for (let id of checkedItem) {
       await handleDeleteTodo(id);
     }
-    setCheckedItems([]);
+    dispatch(setClearCheckedItems());
   };
   const fetchDataTodo = async () => {
     const res = await ApiServiceTodos.apiGetTodo();
     if (res.status === 200) {
-      setListTodo(res.data);
+      dispatch(setListTodo(res.data));
     }
   };
   useEffect(() => {
     fetchDataTodo();
   }, []);
-
   return (
     <div className="container mx-auto mt-20   rounded-lg flex justify-center">
       {showAlert && (
         <Alerts
-          message={inforAlerts.message}
-          type={inforAlerts.type}
-          onClose={() => setShowAlert(false)}
+          message={inforAlerts.infor.message}
+          type={inforAlerts.infor.type}
+          onClose={() => dispatch(setOffShowAlerts())}
         />
       )}
       <div className="  w-10/12 rounded-lg">
@@ -164,15 +165,24 @@ const Todos = () => {
             <p className="text-3xl font-light text-center pt-10">NO DATA</p>
           )}
 
-          <div
-            onClick={handleClearTodosCompleted}
-            className="flex justify-end items-center gap-2 mr-[76px] mt-[77px] cursor-pointer">
+          <div className="mr-[76px]  ml-11 mt-[77px] flex items-center justify-between">
             <div>
-              <img src={clearCompleted} alt=" Clear Completed" />
+              <NavLink
+                to={"/detail"}
+                className=" text-lightorange p-3 rounded-lg hover:bg-lightorange hover:text-white transition-all ">
+                Add History{" "}
+              </NavLink>
             </div>
-            <p className="text-[24px] text-lightorange py-5 ">
-              Clear Completed
-            </p>
+            <div
+              onClick={handleClearTodosCompleted}
+              className="flex justify-end items-center gap-2  cursor-pointer">
+              <div>
+                <img src={clearCompleted} alt=" Clear Completed" />
+              </div>
+              <p className="text-[24px] text-lightorange py-5 ">
+                Clear Completed
+              </p>
+            </div>
           </div>
         </div>
       </div>
