@@ -1,26 +1,17 @@
 import React, { useEffect, useState } from "react";
-import logoTodo from "../assets/image/todo-logo.png";
+
 import clearCompleted from "../assets/image/clear-complete.png";
 import ItemTodo from "../components/ItemTodo";
 import Alerts from "../components/alerts/Alerts";
 import ApiServiceTodos from "../services/ApiTodos";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setClearVal,
-  setValTodoInput,
-} from "../redux-toolkit/features/valTodoInputSlice";
-import { setValFilterTodoInput } from "../redux-toolkit/features/valFilterTodoInputSlice";
-import { setListTodo } from "../redux-toolkit/features/listTodoSlice";
+import { setListTodo } from "../features/listTodo/listTodoSlice";
 import {
   setOffShowAlerts,
   setOnShowAlerts,
-} from "../redux-toolkit/features/alertSlice";
-import { setInforAlert } from "../redux-toolkit/features/inforAlertSlice";
-import {
-  setClearCheckedItems,
-  setToggleCheckedItem,
-} from "../redux-toolkit/features/checkedItemSlice";
+} from "../features/alerts/alertSlice";
+
 const Todos = () => {
   // bat dau lam sua redux tool kit
   const totalStatus = {
@@ -29,21 +20,34 @@ const Todos = () => {
     warning: { message: "Canh bao", type: "warning" },
     info: { message: "Thong tin", type: "info" },
   };
-  const valInputTodo = useSelector((state) => state.valTodoInput);
-  const valFilterTodo = useSelector((state) => state.valFilterTodoInput);
+  const [valInputTodo, setValInputTodo] = useState({
+    title: "",
+  });
+  const [valFilterTodo, setValFilterTodo] = useState({
+    title: "",
+  });
   const listTodo = useSelector((state) => state.listTodo.data);
   const showAlert = useSelector((state) => state.showAlert.showAlert);
-  const inforAlerts = useSelector((state) => state.inforAlert);
-  const checkedItem = useSelector((state) => state.checkedItem);
+  const [inforAlerts, setInforAlerts] = useState({});
+  const [checkedItems, setCheckedItems] = useState([]);
   const dispatch = useDispatch();
+
   const handleChangeInputTodo = (e) => {
     const { name, value } = e.target;
-    dispatch(setValTodoInput({ name, value }));
+    setValInputTodo({
+      ...valInputTodo,
+      [name]: value,
+    });
   };
+
   const handleChangeFilterTodo = (e) => {
     const { name, value } = e.target;
-    dispatch(setValFilterTodoInput({ name, value }));
+    setValFilterTodo({
+      ...valFilterTodo,
+      [name]: value,
+    });
   };
+
   const handleFilterTodo = async (valFilterTodo) => {
     if (!valFilterTodo.title.trim()) {
       const res = await ApiServiceTodos.apiGetTodo();
@@ -56,13 +60,16 @@ const Todos = () => {
     });
     dispatch(setListTodo(dataFilter));
   };
+
   const handleAddTodo = async () => {
     const res = await ApiServiceTodos.apiPostTodo(valInputTodo);
     if (res.status === 201) {
       fetchDataTodo();
       dispatch(setOnShowAlerts());
-      dispatch(setInforAlert(totalStatus.success));
-      dispatch(setClearVal());
+      setInforAlerts(totalStatus.success);
+      setValInputTodo({
+        title: "",
+      });
     }
   };
   const handleEditTodo = async (data) => {
@@ -78,13 +85,15 @@ const Todos = () => {
     }
   };
   const handleToggleChecked = (id) => {
-    dispatch(setToggleCheckedItem(id));
+    setCheckedItems((prev) =>
+      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+    );
   };
   const handleClearTodosCompleted = async () => {
-    for (let id of checkedItem) {
+    for (let id of checkedItems) {
       await handleDeleteTodo(id);
     }
-    dispatch(setClearCheckedItems());
+    setCheckedItems([]);
   };
   const fetchDataTodo = async () => {
     const res = await ApiServiceTodos.apiGetTodo();
@@ -95,20 +104,17 @@ const Todos = () => {
   useEffect(() => {
     fetchDataTodo();
   }, []);
+
   return (
-    <div className="container mx-auto mt-20   rounded-lg flex justify-center">
+    <div className="container mx-auto mt-5   rounded-lg flex justify-center">
       {showAlert && (
         <Alerts
-          message={inforAlerts.infor.message}
-          type={inforAlerts.infor.type}
+          message={inforAlerts.message}
+          type={inforAlerts.type}
           onClose={() => dispatch(setOffShowAlerts())}
         />
       )}
       <div className="  w-10/12 rounded-lg">
-        <div className="flex justify-center p-5 backdrop-blur-md bg-seashell">
-          <img src={logoTodo} alt="Logo todos" />
-        </div>
-
         <div className="flex justify-center lg:justify-between mb-6 gap-3">
           <div className="flex justify-center mt-5">
             <div className="w-full flex">
@@ -175,7 +181,9 @@ const Todos = () => {
             </div>
             <div
               onClick={handleClearTodosCompleted}
-              className="flex justify-end items-center gap-2  cursor-pointer">
+              className={`flex justify-end items-center gap-2  cursor-pointer ${
+                checkedItems.length === 0 && "disabled"
+              } `}>
               <div>
                 <img src={clearCompleted} alt=" Clear Completed" />
               </div>

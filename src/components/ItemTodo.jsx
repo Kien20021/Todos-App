@@ -1,50 +1,34 @@
 import React, { useState } from "react";
 import { DialogEdit } from "./dialogEdits/DialogEdit";
 import DialogDelete from "./dialogDelete/DialogDelete";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  setCloseDialogEdit,
-  setOpenDialogEdit,
-} from "../redux-toolkit/features/openDialogEditSlice";
-import {
-  setCloseDialogDelete,
-  setOpenDialogDelete,
-} from "../redux-toolkit/features/openDialogDeleteSlice";
-import { setToggleCheckStatus } from "../redux-toolkit/features/checkStatusSlice";
-
 const ItemTodo = ({ item, onEditTodo, onDeleteTodo, onToggleChecked }) => {
-  const openDialogEdit = useSelector((state) => state.openDialogEdit.isOpen);
-  const openDialogDelete = useSelector(
-    (state) => state.openDialogDelete.isOpen
-  );
-  const isChecked = useSelector(
-    (state) => state.checkStatus.checkedItems[item.id] || false
-  );
-  const dispatch = useDispatch();
+  const [isOpenDialogEdit, setIsOpenDialogEdit] = useState(false);
+  const [openDialogDelete, setOpenDialogDelete] = useState(false);
+  const [isCheckedStatus, setIsCheckedStatus] = useState(false);
   const showDialogEdit = () => {
-    dispatch(setOpenDialogEdit());
+    setIsOpenDialogEdit(true);
   };
   const handleOkEdit = (data) => {
     onEditTodo(data);
-    dispatch(setCloseDialogEdit());
+    setIsOpenDialogEdit(false);
   };
   const handleCancelEdit = () => {
-    dispatch(setCloseDialogEdit());
+    setIsOpenDialogEdit(false);
   };
 
   const showDialogDelete = () => {
-    dispatch(setOpenDialogDelete());
+    setOpenDialogDelete(true);
   };
   const handleOkDelete = (id) => {
     onDeleteTodo(id);
-    dispatch(setCloseDialogDelete());
+    setOpenDialogDelete(false);
   };
   const handleCancelDelete = () => {
-    dispatch(setCloseDialogDelete());
+    setOpenDialogDelete(false);
   };
 
   const handleCheckboxChange = (id) => {
-    dispatch(setToggleCheckStatus(item.id));
+    setIsCheckedStatus(!isCheckedStatus);
     onToggleChecked(id);
   };
   return (
@@ -59,7 +43,7 @@ const ItemTodo = ({ item, onEditTodo, onDeleteTodo, onToggleChecked }) => {
                 type="checkbox"
                 className="hidden peer"
                 id={`isCheck${item.id}`}
-                checked={isChecked}
+                checked={isCheckedStatus}
                 onChange={() => handleCheckboxChange(item.id)}
               />
               <span className="absolute w-5 h-5 flex items-center justify-center opacity-0 transition-opacity duration-200 peer-checked:opacity-100">
@@ -68,7 +52,7 @@ const ItemTodo = ({ item, onEditTodo, onDeleteTodo, onToggleChecked }) => {
             </label>
             <p
               className={`font-light border-b-[1px] w-full py-4 pl-5 border-skyblue ${
-                isChecked ? "line-through text-lightorange" : ""
+                isCheckedStatus ? "line-through text-lightorange" : ""
               }`}>
               {item.title}
             </p>
@@ -81,7 +65,7 @@ const ItemTodo = ({ item, onEditTodo, onDeleteTodo, onToggleChecked }) => {
                 <i className="fa-regular fa-pen-to-square"></i>
               </button>
               <DialogEdit
-                openDialogEdit={openDialogEdit}
+                openDialogEdit={isOpenDialogEdit}
                 item={item}
                 onOK={(newValTitle) =>
                   handleOkEdit({ id: item.id, title: newValTitle })
