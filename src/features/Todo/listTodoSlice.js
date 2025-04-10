@@ -36,12 +36,32 @@ export const deleteTodo = createAsyncThunk(
   "listTodo/deleteTodo",
   async (id, thunkAPI) => {
     try {
+      const state = thunkAPI.getState();
+      const deletedTodo = state.listTodo.data.find((todo) => todo.id === id);
       const res = await ApiServiceTodos.apiDeleteTodo(id);
       if (res.status === 200) {
+        if (deletedTodo) {
+          thunkAPI.dispatch(setDeletedTodo(deletedTodo));
+        }
         thunkAPI.dispatch(fetchDataTodo());
-        return id;
       } else {
         return thunkAPI.rejectWithValue("Không thể  xoa todo");
+      }
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+export const revertTodo = createAsyncThunk(
+  "listTodo/revertTodoApi",
+  async (todo, thunkAPI) => {
+    try {
+      const res = await ApiServiceTodos.apiPostTodo(todo);
+      if (res.status === 201) {
+        thunkAPI.dispatch(fetchDataTodo());
+        return todo;
+      } else {
+        return thunkAPI.rejectWithValue("Không thể hoàn tác trên server");
       }
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -87,11 +107,15 @@ const listTodoSlice = createSlice({
   name: "listTodo",
   initialState: {
     data: [],
+    deletedTodos: [],
     error: null,
   },
   reducers: {
     setListTodo: (state, action) => {
       state.data = action.payload;
+    },
+    setDeletedTodo: (state, action) => {
+      state.deletedTodos = [...state.deletedTodos, action.payload];
     },
   },
   extraReducers: (builder) => {
@@ -113,9 +137,16 @@ const listTodoSlice = createSlice({
       })
       .addCase(filterTodo.fulfilled, (state, action) => {
         state.data = action.payload;
+      })
+      .addCase(revertTodo.fulfilled, (state, action) => {
+        const todo = action.payload;
+        state.deletedTodos = state.deletedTodos.filter(
+          (item) => item.id !== todo.id
+        );
+        state.data = [...state.data, todo];
       });
   },
 });
 
-export const { setListTodo } = listTodoSlice.actions;
+export const { setListTodo, setDeletedTodo } = listTodoSlice.actions;
 export default listTodoSlice.reducer;

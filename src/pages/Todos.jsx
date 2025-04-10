@@ -80,7 +80,6 @@ const Todos = () => {
   useEffect(() => {
     dispatch(fetchDataTodo());
   }, [dispatch]);
-
   return (
     <div className="container mx-auto mt-5   rounded-lg flex justify-center">
       {showAlert && (
@@ -151,7 +150,7 @@ const Todos = () => {
               <NavLink
                 to={"/detail"}
                 className=" text-lightorange p-3 rounded-lg hover:bg-lightorange hover:text-white transition-all ">
-                Add History{" "}
+                History Delete
               </NavLink>
             </div>
             <div
