@@ -1,9 +1,21 @@
 import React, { useEffect, useState } from "react";
-import logoTodo from "../assets/image/todo-logo.png";
+
 import clearCompleted from "../assets/image/clear-complete.png";
 import ItemTodo from "../components/ItemTodo";
 import Alerts from "../components/alerts/Alerts";
-import ApiServiceTodos from "../services/ApiTodos";
+import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addTodo,
+  deleteTodo,
+  editTodo,
+  fetchDataTodo,
+  filterTodo,
+} from "../features/Todo/listTodoSlice";
+import {
+  setOffShowAlerts,
+  setOnShowAlerts,
+} from "../features/alerts/alertSlice";
 const Todos = () => {
   const totalStatus = {
     success: { message: "Them Thanh Cong", type: "success" },
@@ -17,11 +29,11 @@ const Todos = () => {
   const [valFilterTodo, setValFilterTodo] = useState({
     title: "",
   });
-  const [listTodo, setListTodo] = useState([]);
-  const [showAlert, setShowAlert] = useState(false);
+  const listTodo = useSelector((state) => state.listTodo.data);
+  const showAlert = useSelector((state) => state.showAlert.showAlert);
   const [inforAlerts, setInforAlerts] = useState({});
   const [checkedItems, setCheckedItems] = useState([]);
-
+  const dispatch = useDispatch();
   const handleChangeInputTodo = (e) => {
     const { name, value } = e.target;
     setValInputTodo({
@@ -36,42 +48,23 @@ const Todos = () => {
       [name]: value,
     });
   };
-
-  const handleFilterTodo = async (valFilterTodo) => {
-    if (!valFilterTodo.title.trim()) {
-      const res = await ApiServiceTodos.apiGetTodo();
-      setListTodo(res.data);
-      return;
-    }
-    const res = await ApiServiceTodos.apiFilterTodo(valFilterTodo);
-    const dataFilter = res.data.filter((item) => {
-      return item.title.trim() === valFilterTodo.title.trim();
+  const handleFilterTodo = (valFilterTodo) => {
+    dispatch(filterTodo(valFilterTodo));
+  };
+  const handleAddTodo = () => {
+    if (valInputTodo.title.trim() === "") return;
+    dispatch(addTodo(valInputTodo));
+    dispatch(setOnShowAlerts());
+    setInforAlerts(totalStatus.success);
+    setValInputTodo({
+      title: "",
     });
-    setListTodo(dataFilter);
   };
-
-  const handleAddTodo = async () => {
-    const res = await ApiServiceTodos.apiPostTodo(valInputTodo);
-    if (res.status === 201) {
-      fetchDataTodo();
-      setShowAlert(true);
-      setInforAlerts(totalStatus.success);
-      setValInputTodo({
-        title: "",
-      });
-    }
+  const handleEditTodo = (data) => {
+    dispatch(editTodo(data));
   };
-  const handleEditTodo = async (data) => {
-    const res = await ApiServiceTodos.apiEditTodo(data);
-    if (res.status === 200) {
-      fetchDataTodo();
-    }
-  };
-  const handleDeleteTodo = async (id) => {
-    const res = await ApiServiceTodos.apiDeleteTodo(id);
-    if (res.status === 200) {
-      fetchDataTodo();
-    }
+  const handleDeleteTodo = (id) => {
+    dispatch(deleteTodo(id));
   };
   const handleToggleChecked = (id) => {
     setCheckedItems((prev) =>
@@ -84,30 +77,20 @@ const Todos = () => {
     }
     setCheckedItems([]);
   };
-  const fetchDataTodo = async () => {
-    const res = await ApiServiceTodos.apiGetTodo();
-    if (res.status === 200) {
-      setListTodo(res.data);
-    }
-  };
   useEffect(() => {
-    fetchDataTodo();
-  }, []);
+    dispatch(fetchDataTodo());
+  }, [dispatch]);
 
   return (
-    <div className="container mx-auto mt-20   rounded-lg flex justify-center">
+    <div className="container mx-auto mt-5   rounded-lg flex justify-center">
       {showAlert && (
         <Alerts
           message={inforAlerts.message}
           type={inforAlerts.type}
-          onClose={() => setShowAlert(false)}
+          onClose={() => dispatch(setOffShowAlerts())}
         />
       )}
       <div className="  w-10/12 rounded-lg">
-        <div className="flex justify-center p-5 backdrop-blur-md bg-seashell">
-          <img src={logoTodo} alt="Logo todos" />
-        </div>
-
         <div className="flex justify-center lg:justify-between mb-6 gap-3">
           <div className="flex justify-center mt-5">
             <div className="w-full flex">
@@ -163,16 +146,26 @@ const Todos = () => {
           {listTodo.length === 0 && (
             <p className="text-3xl font-light text-center pt-10">NO DATA</p>
           )}
-
-          <div
-            onClick={handleClearTodosCompleted}
-            className="flex justify-end items-center gap-2 mr-[76px] mt-[77px] cursor-pointer">
+          <div className="mr-[76px]  ml-11 mt-[77px] flex items-center justify-between">
             <div>
-              <img src={clearCompleted} alt=" Clear Completed" />
+              <NavLink
+                to={"/detail"}
+                className=" text-lightorange p-3 rounded-lg hover:bg-lightorange hover:text-white transition-all ">
+                Add History{" "}
+              </NavLink>
             </div>
-            <p className="text-[24px] text-lightorange py-5 ">
-              Clear Completed
-            </p>
+            <div
+              onClick={handleClearTodosCompleted}
+              className={`flex justify-end items-center gap-2  cursor-pointer ${
+                checkedItems.length === 0 && "disabled"
+              } `}>
+              <div>
+                <img src={clearCompleted} alt=" Clear Completed" />
+              </div>
+              <p className="text-[24px] text-lightorange py-5 ">
+                Clear Completed
+              </p>
+            </div>
           </div>
         </div>
       </div>
