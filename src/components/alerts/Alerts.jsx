@@ -15,7 +15,7 @@ const Alerts = ({ message, type, onClose }) => {
     info: <Info className="inline-block mr-2" />,
   };
   useEffect(() => {
-    const timer = setTimeout(onClose, 2000);
+    const timer = setTimeout(onClose, 1000);
     return () => clearTimeout(timer);
   }, [onClose]);
 

@@ -39,7 +39,6 @@ export const deleteTodo = createAsyncThunk(
       const res = await ApiServiceTodos.apiDeleteTodo(id);
       if (res.status === 200) {
         thunkAPI.dispatch(fetchDataTodo());
-        return id;
       } else {
         return thunkAPI.rejectWithValue("Không thể  xoa todo");
       }
