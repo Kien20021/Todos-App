@@ -3,7 +3,7 @@ import ApiServiceTodos from "../../services/ApiTodos";
 
 export const fetchDataTodo = createAsyncThunk(
   "listTodo/fetchDataTodo",
-  async (params = { deleted: false }, thunkAPI) => {
+  async (params = {}, thunkAPI) => {
     try {
       const res = await ApiServiceTodos.apiGetTodo(params);
       if (res.status === 200) {
@@ -53,7 +53,6 @@ export const editTodo = createAsyncThunk(
     try {
       const res = await ApiServiceTodos.apiEditTodo(data);
       if (res.status === 200) {
-        thunkAPI.dispatch(fetchDataTodo());
         return res.data;
       } else {
         return thunkAPI.rejectWithValue("Không thể  xoa todo");

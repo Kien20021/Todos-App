@@ -14,7 +14,6 @@ const ItemTodo = ({ item, onEditTodo, onDeleteTodo, onToggleChecked }) => {
   const handleCancelEdit = () => {
     setIsOpenDialogEdit(false);
   };
-
   const showDialogDelete = () => {
     setOpenDialogDelete(true);
   };
@@ -25,7 +24,6 @@ const ItemTodo = ({ item, onEditTodo, onDeleteTodo, onToggleChecked }) => {
   const handleCancelDelete = () => {
     setOpenDialogDelete(false);
   };
-
   const handleCheckboxChange = (item) => {
     onToggleChecked(item);
   };

@@ -61,23 +61,26 @@ const Todos = () => {
       title: "",
     });
   };
-  const handleEditTodo = (data) => {
-    dispatch(editTodo(data));
+  const handleEditTodo = async (data) => {
+    await dispatch(editTodo(data));
+    dispatch(fetchDataTodo());
   };
   const handleDeleteTodo = (id) => {
     dispatch(deleteTodo(id));
   };
-  const handleToggleChecked = (data) => {
+  const handleToggleChecked = async (data) => {
     setCheckedItems((prev) =>
       prev.includes(data.id)
         ? prev.filter((itemId) => itemId !== data.id)
         : [...prev, data.id]
     );
-    dispatch(editTodo({ ...data, completed: !data.completed }));
+    await dispatch(editTodo({ ...data, completed: !data.completed }));
+    dispatch(fetchDataTodo());
   };
   const handleClearTodosCompleted = async () => {
     for (let id of checkedItems) {
       await dispatch(editTodo({ id, deleted: true }));
+      dispatch(fetchDataTodo({ deleted: false }));
     }
   };
   const syncCheckedItems = (todos = []) => {
@@ -89,15 +92,13 @@ const Todos = () => {
     });
     setCheckedItems(listChecked);
   };
-
   useEffect(() => {
     syncCheckedItems(listTodo);
   }, [listTodo]);
 
   useEffect(() => {
-    dispatch(fetchDataTodo());
+    dispatch(fetchDataTodo({ deleted: false }));
   }, []);
-
   return (
     <div className="container mx-auto mt-5   rounded-lg flex justify-center">
       {showAlert && (
