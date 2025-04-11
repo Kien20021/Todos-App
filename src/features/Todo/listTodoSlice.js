@@ -3,9 +3,9 @@ import ApiServiceTodos from "../../services/ApiTodos";
 
 export const fetchDataTodo = createAsyncThunk(
   "listTodo/fetchDataTodo",
-  async (_, thunkAPI) => {
+  async (params = { deleted: false }, thunkAPI) => {
     try {
-      const res = await ApiServiceTodos.apiGetTodo();
+      const res = await ApiServiceTodos.apiGetTodo(params);
       if (res.status === 200) {
         return res.data;
       } else {
@@ -36,32 +36,11 @@ export const deleteTodo = createAsyncThunk(
   "listTodo/deleteTodo",
   async (id, thunkAPI) => {
     try {
-      const state = thunkAPI.getState();
-      const deletedTodo = state.listTodo.data.find((todo) => todo.id === id);
       const res = await ApiServiceTodos.apiDeleteTodo(id);
       if (res.status === 200) {
-        if (deletedTodo) {
-          thunkAPI.dispatch(setDeletedTodo(deletedTodo));
-        }
         thunkAPI.dispatch(fetchDataTodo());
       } else {
         return thunkAPI.rejectWithValue("Không thể  xoa todo");
-      }
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
-export const revertTodo = createAsyncThunk(
-  "listTodo/revertTodoApi",
-  async (todo, thunkAPI) => {
-    try {
-      const res = await ApiServiceTodos.apiPostTodo(todo);
-      if (res.status === 201) {
-        thunkAPI.dispatch(fetchDataTodo());
-        return todo;
-      } else {
-        return thunkAPI.rejectWithValue("Không thể hoàn tác trên server");
       }
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -84,25 +63,6 @@ export const editTodo = createAsyncThunk(
     }
   }
 );
-
-export const filterTodo = createAsyncThunk(
-  "listTodo/filterTodo",
-  async (valFilterTodo, thunkAPI) => {
-    try {
-      const title = valFilterTodo.title.trim();
-      if (!title) {
-        const res = await ApiServiceTodos.apiGetTodo();
-        return res.data;
-      } else {
-        const res = await ApiServiceTodos.apiFilterTodo({ title });
-        const filtered = res.data.filter((item) => item.title.trim() === title);
-        return filtered;
-      }
-    } catch (error) {
-      return thunkAPI.rejectWithValue("Không thể lọc todo");
-    }
-  }
-);
 const listTodoSlice = createSlice({
   name: "listTodo",
   initialState: {
@@ -114,9 +74,6 @@ const listTodoSlice = createSlice({
     setListTodo: (state, action) => {
       state.data = action.payload;
     },
-    setDeletedTodo: (state, action) => {
-      state.deletedTodos = [...state.deletedTodos, action.payload];
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -127,23 +84,15 @@ const listTodoSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(fetchDataTodo.rejected, (state, action) => {
-        state.error = action.payload || "Đã xảy ra lỗi";
+        // Hard code becasue api not support return empty array
+        if ((action.error.message = "Rejected")) {
+          state.data = [];
+        } else {
+          state.error = action.payload || "Đã xảy ra lỗi";
+        }
       })
       .addCase(addTodo.rejected, (state, action) => {
         state.error = action.payload || "Không thể thêm todo";
-      })
-      .addCase(deleteTodo.rejected, (state, action) => {
-        state.error = action.payload || "Không thể xoa todo";
-      })
-      .addCase(filterTodo.fulfilled, (state, action) => {
-        state.data = action.payload;
-      })
-      .addCase(revertTodo.fulfilled, (state, action) => {
-        const todo = action.payload;
-        state.deletedTodos = state.deletedTodos.filter(
-          (item) => item.id !== todo.id
-        );
-        state.data = [...state.data, todo];
       });
   },
 });

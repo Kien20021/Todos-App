@@ -4,17 +4,14 @@ const ApiServiceTodos = {
   apiPostTodo: async (data) => {
     return axios.post(`${API_TODOS}`, data);
   },
-  apiGetTodo: async () => {
-    return axios.get(API_TODOS);
+  apiGetTodo: async (params) => {
+    return axios.get(API_TODOS, { params });
   },
   apiDeleteTodo: async (id) => {
     return axios.delete(`${API_TODOS}/${id}`);
   },
   apiEditTodo: async (data) => {
-    return axios.put(`${API_TODOS}/${data.id}`, { title: data.title });
-  },
-  apiFilterTodo: async (title) => {
-    return axios.get(`${API_TODOS}?q=${title}`);
+    return axios.put(`${API_TODOS}/${data.id}`, data);
   },
 };
 export default ApiServiceTodos;

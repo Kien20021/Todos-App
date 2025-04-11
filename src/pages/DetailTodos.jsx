@@ -1,22 +1,23 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import { fetchDataTodo, revertTodo } from "../features/Todo/listTodoSlice";
-
+import { editTodo, fetchDataTodo } from "../features/Todo/listTodoSlice";
 const DetailTodos = () => {
-  const deletedTodos = useSelector((state) => state.listTodo.deletedTodos);
+  const listTodo = useSelector((state) => state.listTodo.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleRevert = (todo) => {
-    dispatch(revertTodo(todo));
+  const handleRevert = (data) => {
+    dispatch(editTodo({ ...data, deleted: false }));
     navigate("/");
   };
-
+  useEffect(() => {
+    dispatch(fetchDataTodo({ deleted: true }));
+  }, []);
   return (
     <div className="container mx-auto mt-10   rounded-lg">
       <h1 className="text-3xl text-center mb-5">List Status Todos</h1>
       <div className="backdrop-blur-md bg-seashell rounded-lg w-full">
-        {deletedTodos.map((item) => (
+        {listTodo?.map((item) => (
           <div key={item.id} className="flex justify-center   ">
             <div className="w-full  ">
               <div className=" flex justify-between items-center pl-11 pr-12 ">
@@ -51,7 +52,7 @@ const DetailTodos = () => {
             </div>
           </div>
         ))}
-        {deletedTodos.length === 0 && (
+        {listTodo?.length === 0 && (
           <p className="text-2xl text-center pt-2">No Data</p>
         )}
         <div className="mt-[100px] pl-11 pb-10">

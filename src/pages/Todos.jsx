@@ -10,7 +10,6 @@ import {
   deleteTodo,
   editTodo,
   fetchDataTodo,
-  filterTodo,
 } from "../features/Todo/listTodoSlice";
 import {
   setOffShowAlerts,
@@ -25,6 +24,8 @@ const Todos = () => {
   };
   const [valInputTodo, setValInputTodo] = useState({
     title: "",
+    completed: false,
+    deleted: false,
   });
   const [valFilterTodo, setValFilterTodo] = useState({
     title: "",
@@ -49,7 +50,7 @@ const Todos = () => {
     });
   };
   const handleFilterTodo = (valFilterTodo) => {
-    dispatch(filterTodo(valFilterTodo));
+    dispatch(fetchDataTodo({ ...valFilterTodo, deleted: false }));
   };
   const handleAddTodo = () => {
     if (valInputTodo.title.trim() === "") return;
@@ -66,20 +67,37 @@ const Todos = () => {
   const handleDeleteTodo = (id) => {
     dispatch(deleteTodo(id));
   };
-  const handleToggleChecked = (id) => {
+  const handleToggleChecked = (data) => {
     setCheckedItems((prev) =>
-      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+      prev.includes(data.id)
+        ? prev.filter((itemId) => itemId !== data.id)
+        : [...prev, data.id]
     );
+    dispatch(editTodo({ ...data, completed: !data.completed }));
   };
   const handleClearTodosCompleted = async () => {
     for (let id of checkedItems) {
-      await handleDeleteTodo(id);
+      await dispatch(editTodo({ id, deleted: true }));
     }
-    setCheckedItems([]);
   };
+  const syncCheckedItems = (todos = []) => {
+    const listChecked = [];
+    todos.forEach((item) => {
+      if (item.completed == true) {
+        listChecked.push(item.id);
+      }
+    });
+    setCheckedItems(listChecked);
+  };
+
+  useEffect(() => {
+    syncCheckedItems(listTodo);
+  }, [listTodo]);
+
   useEffect(() => {
     dispatch(fetchDataTodo());
-  }, [dispatch]);
+  }, []);
+
   return (
     <div className="container mx-auto mt-5   rounded-lg flex justify-center">
       {showAlert && (
@@ -131,7 +149,7 @@ const Todos = () => {
           </div>
         </div>
         <div className="backdrop-blur-md bg-seashell rounded-lg ">
-          {listTodo.map((item) => {
+          {listTodo?.map((item) => {
             return (
               <ItemTodo
                 onEditTodo={handleEditTodo}
@@ -142,7 +160,7 @@ const Todos = () => {
               />
             );
           })}
-          {listTodo.length === 0 && (
+          {listTodo?.length === 0 && (
             <p className="text-3xl font-light text-center pt-10">NO DATA</p>
           )}
           <div className="mr-[76px]  ml-11 mt-[77px] flex items-center justify-between">
