@@ -22,7 +22,6 @@ export const addTodo = createAsyncThunk(
     try {
       const res = await ApiServiceTodos.apiPostTodo(newTodo);
       if (res.status === 201) {
-        thunkAPI.dispatch(fetchDataTodo());
         return res.data;
       } else {
         return thunkAPI.rejectWithValue("Không thể thêm todo");
@@ -38,7 +37,7 @@ export const deleteTodo = createAsyncThunk(
     try {
       const res = await ApiServiceTodos.apiDeleteTodo(id);
       if (res.status === 200) {
-        thunkAPI.dispatch(fetchDataTodo());
+        return res.data;
       } else {
         return thunkAPI.rejectWithValue("Không thể  xoa todo");
       }

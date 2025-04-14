@@ -49,12 +49,17 @@ const Todos = () => {
       [name]: value,
     });
   };
+
+  const reloadTodos = () => {
+    dispatch(fetchDataTodo({ deleted: false }));
+  };
   const handleFilterTodo = (valFilterTodo) => {
     dispatch(fetchDataTodo({ ...valFilterTodo, deleted: false }));
   };
-  const handleAddTodo = () => {
+  const handleAddTodo = async () => {
     if (valInputTodo.title.trim() === "") return;
-    dispatch(addTodo(valInputTodo));
+    await dispatch(addTodo(valInputTodo));
+    reloadTodos();
     dispatch(setOnShowAlerts());
     setInforAlerts(totalStatus.success);
     setValInputTodo({
@@ -63,10 +68,11 @@ const Todos = () => {
   };
   const handleEditTodo = async (data) => {
     await dispatch(editTodo(data));
-    dispatch(fetchDataTodo());
+    reloadTodos();
   };
-  const handleDeleteTodo = (id) => {
-    dispatch(deleteTodo(id));
+  const handleDeleteTodo = async (id) => {
+    await dispatch(deleteTodo(id));
+    reloadTodos();
   };
   const handleToggleChecked = async (data) => {
     setCheckedItems((prev) =>
@@ -75,12 +81,12 @@ const Todos = () => {
         : [...prev, data.id]
     );
     await dispatch(editTodo({ ...data, completed: !data.completed }));
-    dispatch(fetchDataTodo());
+    reloadTodos();
   };
   const handleClearTodosCompleted = async () => {
     for (let id of checkedItems) {
       await dispatch(editTodo({ id, deleted: true }));
-      dispatch(fetchDataTodo({ deleted: false }));
+      reloadTodos();
     }
   };
   const syncCheckedItems = (todos = []) => {
@@ -97,7 +103,7 @@ const Todos = () => {
   }, [listTodo]);
 
   useEffect(() => {
-    dispatch(fetchDataTodo({ deleted: false }));
+    reloadTodos();
   }, []);
   return (
     <div className="container mx-auto mt-5   rounded-lg flex justify-center">
