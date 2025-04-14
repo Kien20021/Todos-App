@@ -10,7 +10,6 @@ import {
   deleteTodo,
   editTodo,
   fetchDataTodo,
-  filterTodo,
 } from "../features/Todo/listTodoSlice";
 import {
   setOffShowAlerts,
@@ -25,6 +24,8 @@ const Todos = () => {
   };
   const [valInputTodo, setValInputTodo] = useState({
     title: "",
+    completed: false,
+    deleted: false,
   });
   const [valFilterTodo, setValFilterTodo] = useState({
     title: "",
@@ -48,39 +49,62 @@ const Todos = () => {
       [name]: value,
     });
   };
-  const handleFilterTodo = (valFilterTodo) => {
-    dispatch(filterTodo(valFilterTodo));
+
+  const reloadTodos = () => {
+    dispatch(fetchDataTodo({ deleted: false }));
   };
-  const handleAddTodo = () => {
+  const handleFilterTodo = (valFilterTodo) => {
+    dispatch(fetchDataTodo({ ...valFilterTodo, deleted: false }));
+  };
+  const handleAddTodo = async () => {
     if (valInputTodo.title.trim() === "") return;
-    dispatch(addTodo(valInputTodo));
+    await dispatch(addTodo(valInputTodo));
+    reloadTodos();
     dispatch(setOnShowAlerts());
     setInforAlerts(totalStatus.success);
     setValInputTodo({
       title: "",
     });
   };
-  const handleEditTodo = (data) => {
-    dispatch(editTodo(data));
+  const handleEditTodo = async (data) => {
+    await dispatch(editTodo(data));
+    reloadTodos();
   };
-  const handleDeleteTodo = (id) => {
-    dispatch(deleteTodo(id));
+  const handleDeleteTodo = async (id) => {
+    await dispatch(deleteTodo(id));
+    reloadTodos();
   };
-  const handleToggleChecked = (id) => {
+  const handleToggleChecked = async (data) => {
     setCheckedItems((prev) =>
-      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+      prev.includes(data.id)
+        ? prev.filter((itemId) => itemId !== data.id)
+        : [...prev, data.id]
     );
+    await dispatch(editTodo({ ...data, completed: !data.completed }));
+    reloadTodos();
   };
   const handleClearTodosCompleted = async () => {
     for (let id of checkedItems) {
-      await handleDeleteTodo(id);
+      await dispatch(editTodo({ id, deleted: true }));
+      reloadTodos();
     }
-    setCheckedItems([]);
+  };
+  const syncCheckedItems = (todos = []) => {
+    const listChecked = [];
+    todos.forEach((item) => {
+      if (item.completed == true) {
+        listChecked.push(item.id);
+      }
+    });
+    setCheckedItems(listChecked);
   };
   useEffect(() => {
-    dispatch(fetchDataTodo());
-  }, [dispatch]);
+    syncCheckedItems(listTodo);
+  }, [listTodo]);
 
+  useEffect(() => {
+    reloadTodos();
+  }, []);
   return (
     <div className="container mx-auto mt-5   rounded-lg flex justify-center">
       {showAlert && (
@@ -132,7 +156,7 @@ const Todos = () => {
           </div>
         </div>
         <div className="backdrop-blur-md bg-seashell rounded-lg ">
-          {listTodo.map((item) => {
+          {listTodo?.map((item) => {
             return (
               <ItemTodo
                 onEditTodo={handleEditTodo}
@@ -143,7 +167,7 @@ const Todos = () => {
               />
             );
           })}
-          {listTodo.length === 0 && (
+          {listTodo?.length === 0 && (
             <p className="text-3xl font-light text-center pt-10">NO DATA</p>
           )}
           <div className="mr-[76px]  ml-11 mt-[77px] flex items-center justify-between">
@@ -151,7 +175,7 @@ const Todos = () => {
               <NavLink
                 to={"/detail"}
                 className=" text-lightorange p-3 rounded-lg hover:bg-lightorange hover:text-white transition-all ">
-                Add History{" "}
+                History Delete
               </NavLink>
             </div>
             <div
